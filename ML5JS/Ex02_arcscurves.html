@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>ARCS & CURVES</title>
+  <style>
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="button" value="EXERCISE 1" onclick="ex1()" />
+  <input type="button" value="EXERCISE 2" onclick="ex2()" />
+  <input type="button" value="EXERCISE 3" onclick="ex3()" />
+  <input type="button" value="EXERCISE 4" onclick="ex4()" />
+
+  <canvas id="myCanvas" width="500" height="400" style="border:solid 3px orange">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <script>
+    const canvas = document.querySelector("#myCanvas");
+    const ctx = canvas.getContext("2d");
+
+    //CANVAS SIZE
+    const W = canvas.width, H = canvas.height;
+
+    function ex1() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+
+      //TODO
+    }
+
+    function ex2() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+
+      //TODO
+    }
+
+    function ex3() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+
+      //TODO
+    }
+
+
+    let mouthMiddleY = 400;
+    let mouthCornersY = 250;
+    let dirCornersDown = true;
+
+    function ex4() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+
+      ctx.lineWidth = 20;
+      ctx.fillStyle = "lightgrey";
+      ctx.strokeStyle = "black";
+
+      window.setInterval(animate, 1000 / 30);
+    }
+
+    let moveDown = true;
+    let pY = 250;
+    let pcY = 400;
+
+    function animate() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+
+      ctx.beginPath()
+      ctx.arc(200, 233, 150, 0, 2 * Math.PI)
+      ctx.stroke()
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.moveTo(170, 130)
+      ctx.lineTo(160, 200)
+      ctx.moveTo(230, 130)
+      ctx.lineTo(240, 200)
+      ctx.stroke()
+
+      ctx.beginPath()
+      ctx.moveTo(100, pY)
+      ctx.quadraticCurveTo(200, pcY, 300, pY)
+      ctx.stroke()
+
+      // if (pY >= 300 || pY <= 250) moveDown = !moveDown;
+      if (pY >= 300)
+        moveDown = false;
+      if (pY <= 250)
+        moveDown = true;
+
+      if (moveDown) {
+        pcY -= 4
+        pY++
+      }
+      else {
+        pcY += 4
+        pY--
+      }
+
+    }
+
+  </script>
+</body>
+
+</html>

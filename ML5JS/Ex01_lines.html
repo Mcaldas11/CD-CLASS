@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PATHS & LINES</title>
+  <style>
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="button" value="EXERCISE 1" onclick="ex1()" />
+  <input type="button" value="EXERCISE 2" onclick="ex2()" />
+  <input type="button" value="EXERCISE 3" onclick="ex3()" />
+  <input type="button" value="EXERCISE 4" onclick="ex4()" />
+  <canvas id="myCanvas" width="500" height="200" style="border:solid 3px orange">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <script>
+    const canvas = document.querySelector("#myCanvas");
+    const ctx = canvas.getContext("2d");
+
+    function ex1() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); //erase Canvas
+      
+      //retangulo azul
+      ctx.beginPath();
+      ctx.moveTo(50, 50);
+      ctx.lineTo(200, 50);
+      ctx.lineTo(200, 120);
+      ctx.lineTo(50, 120);
+      ctx.closePath();
+      ctx.fillStyle = "blue";
+      ctx.fill();
+
+      ctx.beginPath(); // <---- se esqueceres isto, junta com o azul!
+      ctx.moveTo(100, 80);
+      ctx.lineTo(280, 80);
+      ctx.lineTo(280, 160);
+      ctx.lineTo(100, 160);
+      ctx.closePath();
+      ctx.strokeStyle = "lime";
+      ctx.stroke();
+
+
+
+
+
+      //TODO
+    }
+
+    function ex2() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); //erase Canvas
+      
+      //TODO
+    }
+
+    function ex3() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height); //erase Canvas
+
+      //TODO
+    }
+
+    //CANVAS SIZE
+    const W = canvas.width, H = canvas.height;
+    function ex4() {
+      ctx.clearRect(0, 0, W, H); //erase Canvas
+      render(); // invoca a função de animação
+    }
+
+    function render() {
+      //TODO
+    }
+
+
+    //helper function
+    function getRandomColor() {
+      let r = Math.floor(Math.random() * 256);
+      let g = Math.floor(Math.random() * 256);
+      let b = Math.floor(Math.random() * 256);
+
+      return `rgb(${r},${g},${b})`;
+    }
+
+  </script>
+</body>
+
+</html>

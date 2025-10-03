@@ -1,0 +1,96 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detetor de movimento</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script src="https://unpkg.com/ml5@1/dist/ml5.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      width: 100%;
+    }
+    canvas {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    let video;
+    let bodyPose;
+    let poses = [];
+    let connections;
+
+    function preload() {
+      // Load the bodyPose model
+      bodyPose = ml5.bodyPose();
+    }
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight); // Canvas ocupa todo o ecrã
+
+      // Criar o vídeo e escondê-lo
+      video = createCapture(VIDEO);
+      video.size(windowWidth, windowHeight); // vídeo também ocupa todo o ecrã
+      video.hide();
+
+      // Start detecting poses in the webcam video
+      bodyPose.detectStart(video, gotPoses);
+
+      // Get the skeleton connection information
+      connections = bodyPose.getSkeleton();
+    }
+
+    function draw() {
+      // Desenhar o vídeo da webcam
+      image(video, 0, 0, width, height);
+
+      // Desenhar as ligações do esqueleto
+      for (let i = 0; i < poses.length; i++) {
+        let pose = poses[i];
+        for (let j = 0; j < connections.length; j++) {
+          let pointAIndex = connections[j][0];
+          let pointBIndex = connections[j][1];
+          let pointA = pose.keypoints[pointAIndex];
+          let pointB = pose.keypoints[pointBIndex];
+          if (pointA.confidence > 0.1 && pointB.confidence > 0.1) {
+            stroke(255, 0, 0);
+            strokeWeight(2);
+            line(pointA.x, pointA.y, pointB.x, pointB.y);
+          }
+        }
+      }
+
+      // Desenhar os pontos das articulações
+      for (let i = 0; i < poses.length; i++) {
+        let pose = poses[i];
+        for (let j = 0; j < pose.keypoints.length; j++) {
+          let keypoint = pose.keypoints[j];
+          if (keypoint.confidence > 0.1) {
+            fill(0, 255, 0);
+            noStroke();
+            circle(keypoint.x, keypoint.y, 10);
+          }
+        }
+      }
+    }
+
+    // Atualizar o canvas quando a janela muda de tamanho
+    function windowResized() {
+      resizeCanvas(windowWidth, windowHeight);
+      video.size(windowWidth, windowHeight);
+    }
+
+    // Callback function para o bodyPose
+    function gotPoses(results) {
+      poses = results;
+    }
+  </script>
+</body>
+</html>

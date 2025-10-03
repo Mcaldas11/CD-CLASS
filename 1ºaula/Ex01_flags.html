@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canvas Flags</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+
+        button {
+            margin: 5px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div style="text-align: center;">
+        <h1>Draw Flags</h1>
+        <div style="margin-bottom: 10px;">
+            <button onclick="drawGermany()">Germany</button>
+            <button onclick="drawFrance()">France</button>
+            <button onclick="drawSweden()">Sweden</button>
+            <button onclick="drawSwitzerland()">Switzerland</button>
+        </div>
+        <canvas id="flagCanvas" width="300" height="200"></canvas>
+    </div>
+
+
+    <script>
+        const canvas = document.getElementById('flagCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let W = canvas.width;
+        let H = canvas.height;
+
+        function drawGermany() {
+
+            ctx.fillStyle = "black";
+            ctx.fillRect(0, 0, W, H/3)
+            ctx.fillStyle = "red";
+            ctx.fillRect(0, H/3, W, H/3)
+            ctx.fillStyle = "gold";
+            ctx.fillRect(0, 2*H/3, W, H/3);
+            //TODO  
+        }
+
+        function drawFrance() {
+
+            ctx.fillStyle = "blue";
+            ctx.fillRect(0, 0, W/3, H);
+            ctx.fillStyle = "white";
+            ctx.fillRect(W/3, 0, W/3, H);
+            ctx.fillStyle = "red";
+            ctx.fillRect(2*W/3, 0, W/3, H);
+        }
+        
+
+        function drawSweden() {
+            ctx.fillStyle = "blue";
+            ctx.fillRect(0, 0, W, H);
+            ctx.fillStyle = "yellow";
+            ctx.fillRect(0, H/2 - 25, W, 50);
+            ctx.fillRect(W/3 - 25, 0, 50, H);
+            //TODO
+        }
+
+        function drawSwitzerland() {
+
+            ctx.clearRect(0, 0, W, H);
+
+            let side = Math.min(W, H);
+            let x = (W - side) / 2;
+            let y = (H - side) / 2;
+
+            ctx.fillStyle = "red";
+            ctx.fillRect(x, y, side, side);
+
+            ctx.fillStyle = "white";
+            ctx.fillStyle = "white";
+            ctx.fillRect(W/2 - side*0.3, H/2 - side*0.05, side*0.6, side*0.1); // horizontal
+            ctx.fillRect(W/2 - side*0.05, H/2 - side*0.3, side*0.1, side*0.6); // vertical
+            //TODO
+        }
+    </script>
+</body>
+
+</html>
