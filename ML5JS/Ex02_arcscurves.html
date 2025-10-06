@@ -31,15 +31,74 @@
     function ex1() {
       ctx.clearRect(0, 0, W, H); //erase Canvas
 
+      ctx.fillStyle="blue";
+
+       ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.strokeStyle = "blue";
+        ctx.arc(75, 75, 50, 0, Math.PI * 2);
+        ctx.moveTo(20, 90);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.strokeStyle = "blue";
+        ctx.arc(200, 75, 50, 0, Math.PI);
+        ctx.moveTo(20, 90);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.strokeStyle = "blue";
+        ctx.arc(350, 75, 50, Math.PI, Math.PI * 2);
+        ctx.moveTo(20, 90);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.strokeStyle = "blue";
+        ctx.arc(75, 200, 50, (3 * Math.PI) / 5, (9 * Math.PI) / 5);
+        ctx.moveTo(20, 90);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
+        ctx.beginPath();
+        ctx.fillStyle = "blue";
+        ctx.strokeStyle = "blue";
+        ctx.arc(200, 200, 50, (9 * Math.PI) / 5, (3 * Math.PI) / 5);
+        ctx.moveTo(20, 90);
+        ctx.fill();
+        ctx.stroke();
+        ctx.closePath();
+
       //TODO
     }
 
     function ex2() {
-      ctx.clearRect(0, 0, W, H); //erase Canvas
+      ctx.clearRect(0, 0, W, H);
 
-      //TODO
+      const colors = ["blue", "black", "red", "yellow", "green"];
+      const positions = [
+      [100, 100], [200, 100], [300, 100], // linha de cima
+      [150, 160], [250, 160]              // linha de baixo
+    ];
+
+      ctx.lineWidth = 8;
+
+      for (let i = 0; i < colors.length; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = colors[i];
+      ctx.arc(positions[i][0], positions[i][1], 40, 0, 2 * Math.PI);
+      ctx.stroke();
     }
-
+}
     function ex3() {
       ctx.clearRect(0, 0, W, H); //erase Canvas
 
