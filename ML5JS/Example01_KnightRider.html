@@ -35,18 +35,43 @@
 
     let x = 0; let moveRight = true;
 
+
+
+
     function render() {
       //CLEAR CANVAS
-      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = "#333333";
+      ctx.globalAlpha = 0.3;
+      ctx.fillRect(0, 0, W, H);
       // UPDATE COLOR
-      ctx.fillStyle = getRandomColor();
-      // DRAW
+      ctx.fillStyle = "red";
+      ctx.globalAlpha = 1;
       ctx.fillRect(x, 0, 50, 50);
+      
+
+      //POSITION UPDATE
+      if(moveRight) {
+        x += 50
+        if(x >= W - 50 ) {
+          moveRight = false;
+          x = W - 50;
+        }
+      } else {
+        x -= 50
+        if(x <= 0 ) {
+          moveRight = true;
+          x = 0;
+        }
+      }
+
+      /* requestAnimationFrame(render); */
     }
 
     window.onload = function () {
-      window.setInterval(render, 1000 / 12);
+      setInterval(render, 1000 / 10);
     };
+
+
 
 
     //helper function
