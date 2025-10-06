@@ -100,10 +100,33 @@
     }
 }
     function ex3() {
-      ctx.clearRect(0, 0, W, H); //erase Canvas
+        ctx.clearRect(0, 0, W, H); //erase Canvas
 
-      //TODO
-    }
+        //TODO
+
+        ctx.moveTo(150, 60);
+        ctx.bezierCurveTo(150, 30, 120, 30, 90, 30); //just need to look at the grid (point 0, point 1, x, y)
+
+        ctx.moveTo(90, 30);
+        ctx.bezierCurveTo(60, 30, 30, 60, 30, 90);
+
+        ctx.moveTo(30, 90);
+        ctx.bezierCurveTo(30, 180, 90, 210, 150, 240);
+
+        ctx.moveTo(210, 30);
+        ctx.bezierCurveTo(240, 30, 270, 60, 270, 90);
+
+        ctx.moveTo(150, 60);
+        ctx.bezierCurveTo(150, 30, 180, 30, 210, 30);
+
+        ctx.moveTo(270, 90);
+        ctx.bezierCurveTo(270, 180, 210, 210, 150, 240);
+
+        ctx.strokeStyle = "red";
+        ctx.stroke();
+      }
+
+
 
 
     let mouthMiddleY = 400;
