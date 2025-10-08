@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <title>INTERACTIONS</title>
 </head>
-
 <body>
     <canvas id="canvas" width="300" height="250" style="border:solid 1px green">
         Your browser does not support HTML5 Canvas.
@@ -20,9 +18,34 @@
         const W = canvas.width;
         const H = canvas.height;
 
-        //TODO
- 
+        let text = "";
+
+        function drawText() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.font = "20px Arial";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(text, W / 2, H / 2);
+        }
+
+        document.addEventListener("keydown", e => {
+            const key = e.key;
+
+            if (key === "Backspace") {
+                text = text.slice(0, -1);
+            } else if (key.length === 1) {
+                text += key;
+            }
+
+            drawText();
+        });
+
+        function clean() {
+            text = "";
+            drawText();
+        }
+
+        drawText(); // Initial draw
     </script>
 </body>
-
 </html>
