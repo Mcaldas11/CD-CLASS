@@ -104,6 +104,29 @@
             ctx.beginPath();
         });
 
+        canvas.addEventListener('mousedown', e => {
+            drawing = true;
+            prevX = e.offsetX;
+            prevY = e.offsetY;
+            ctx.beginPath();
+            ctx.moveTo(prevX, prevY);
+        }); 
+
+        canvas.addEventListener('mousemove', e => {
+            if (drawing) {
+                const currX = e.offsetX;
+                const currY = e.offsetY;
+                ctx.lineTo(currX, currY);
+                ctx.stroke();
+                prevX = currX;
+                prevY = currY;
+            }
+        });
+        canvas.addEventListener('mouseup', () => {
+            drawing = false;
+            ctx.beginPath();
+        });
+        
         // TODO
 
     </script>
