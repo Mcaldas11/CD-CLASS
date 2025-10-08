@@ -5,6 +5,7 @@
     <title>INTERACTIONS (mouse)</title>
 </head>
 <body>
+    <button id="clearBtn" style="display:block;margin-bottom:8px;">Clear</button>
     <canvas id="canvas" width="300" height="250" style="border:solid 1px green">
         Your browser does not support HTML5 Canvas.
     </canvas>
@@ -35,6 +36,13 @@
         canvas.addEventListener('mouseleave', () => {
             drawing = false;
             ctx.beginPath(); // Start a new path when mouse leaves
+        });
+
+        // Clear button
+        const clearBtn = document.querySelector('#clearBtn');
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
         });
     </script>
 </body>
