@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>INTERACTIONS (mouse)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            text-align: center;
+            padding-top: 30px;
+        }
+
+        canvas {
+            border: 2px solid #2e8b57;
+            border-radius: 6px;
+            background-color: #fff;
+            cursor: crosshair;
+        }
+
+        .controls {
+            margin-top: 15px;
+        }
+
+        select,
+        button {
+            margin: 0 8px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #2e8b57;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #3cb371;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="500" height="350">
+        O seu navegador não suporta HTML5 Canvas.
+    </canvas>
+
+    <div class="controls">
+        <button id="clearBtn">Limpar Área</button>
+        Largura da linha:
+        <select id="selWidth">
+            <option value="1">1</option>
+            <option value="3" selected>3</option>
+            <option value="5">5</option>
+            <option value="7">7</option>
+            <option value="9">9</option>
+            <option value="11">11</option>
+        </select>
+        Cor:
+        <select id="selColor">
+            <option value="black" selected>Preto</option>
+            <option value="blue">Azul</option>
+            <option value="red">Vermelho</option>
+            <option value="green">Verde</option>
+            <option value="yellow">Amarelo</option>
+            <option value="gray">Cinzento</option>
+        </select>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const clearBtn = document.getElementById('clearBtn');
+        const colorSelect = document.getElementById('selColor');
+        const widthSelect = document.getElementById('selWidth');
+
+        let drawing = false;
+        let prevX = 0, prevY = 0;
+
+        const W = canvas.width, H = canvas.height;
+
+        // Configuração inicial
+        ctx.lineWidth = widthSelect.value;
+        ctx.strokeStyle = colorSelect.value;
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+
+        // Atualizar cor e espessura
+        colorSelect.addEventListener('change', () => {
+            ctx.strokeStyle = colorSelect.value;
+        });
+
+        widthSelect.addEventListener('change', () => {
+            ctx.lineWidth = widthSelect.value;
+        });
+
+        // Função para limpar o canvas
+        clearBtn.addEventListener('click', () => {
+            ctx.clearRect(0, 0, W, H);
+            ctx.beginPath();
+        });
+
+        // TODO
+
+    </script>
+</body>
+
+</html>

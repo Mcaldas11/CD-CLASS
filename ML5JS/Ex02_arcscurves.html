@@ -151,23 +151,24 @@
       ctx.clearRect(0, 0, W, H); //erase Canvas
 
       ctx.beginPath()
-      ctx.arc(200, 233, 150, 0, 2 * Math.PI)
+      ctx.arc(200, 233, 150, 0, 2 * Math.PI) //circulo da cara
       ctx.stroke()
       ctx.fill()
 
       ctx.beginPath()
-      ctx.moveTo(170, 130)
-      ctx.lineTo(160, 200)
-      ctx.moveTo(230, 130)
+      ctx.moveTo(170, 130) //olho esquerdo
+      ctx.lineTo(160, 200) 
+      ctx.moveTo(230, 130)// olho direito
       ctx.lineTo(240, 200)
       ctx.stroke()
 
       ctx.beginPath()
-      ctx.moveTo(100, pY)
+      ctx.moveTo(100, pY) //boca
       ctx.quadraticCurveTo(200, pcY, 300, pY)
       ctx.stroke()
 
       // if (pY >= 300 || pY <= 250) moveDown = !moveDown;
+      //boca a sorrir e a ficar triste
       if (pY >= 300)
         moveDown = false;
       if (pY <= 250)

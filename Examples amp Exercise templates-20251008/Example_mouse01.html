@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>INTERACTIONS (mouse)</title>
+</head>
+
+<body>
+    <canvas id="canvas" width="300" height="250" style="border:solid 1px green">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+
+    <script>
+
+        const canvas = document.querySelector('#canvas');
+        const ctx = canvas.getContext("2d");
+
+        let x = 0; y = 0;
+
+        // Add the event listener for mousemove
+        canvas.addEventListener('mousemove', e => {
+            x = e.offsetX; 
+            y = e.offsetY;
+
+            ctx.beginPath();
+            ctx.arc(x, y, 2, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+
+
+
+
+    </script>
+</body>
+
+</html>

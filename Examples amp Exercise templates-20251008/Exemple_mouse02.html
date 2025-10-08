@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>INTERACTIONS (mouse)</title>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="200" height="200" style="border:solid 1px blue">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+  <script>
+    let canvas = document.getElementById('myCanvas');
+    let ctx = canvas.getContext('2d');
+
+    let W = canvas.width;
+    let H = canvas.height;
+
+    //configurações do texto
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 30px arial';
+
+    canvas.addEventListener('mouseenter', e => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillText('Hello!!!', W / 2, H / 2);
+    });
+
+    canvas.addEventListener('mouseleave', e => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillText('BYE BYE', W / 2, H / 2);
+    });
+
+    canvas.addEventListener('click', e => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillText('Click', W / 2, H / 2);
+    });
+
+    canvas.addEventListener('dblclick', e => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillText('Dois cliques', W / 2, H / 2);
+    });
+  </script>
+</body>
+
+</html>

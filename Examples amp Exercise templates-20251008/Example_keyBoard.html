@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>INTERACTIONS (keyboard)</title>
+</head>
+
+<body>
+    <canvas id="c1" width="300" height="250" style="border:solid 1px green">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <canvas id="c2" width="300" height="250" style="border:solid 1px orange">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script>
+        //Canvas#1
+        const canvas1 = document.querySelector('#c1');
+        const ctx1 = canvas1.getContext("2d");
+        //Canvas#2
+        const canvas2 = document.querySelector('#c2');
+        const ctx2 = canvas2.getContext("2d");
+
+        //color
+        ctx1.fillStyle = ctx2.fillStyle = "blue";
+
+        //ball definitions
+        const R = 10;
+        let x1 = x2 = 10;
+        let rightKey = false; //only for Canvas#2
+
+        //set the event handler property keydown
+        onkeydown = (e) => {
+            if (e.key == 'ArrowRight') {
+                x1++; //canvas 1: UPDATE BALL
+                rightKey = true; //Canvas#2
+            }
+
+        }
+        //set the event handler property keyup
+        onkeyup = (e) => {
+            if (e.key == 'ArrowRight')
+                rightKey = false; //Canvas#2
+        }
+
+
+        //ANIMATION CYCLE
+        function render() {
+            //erases Canvas#1
+            ctx1.clearRect(0, 0, canvas1.width, canvas1.height);
+            //erases Canvas#2
+            ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+
+            //draw on Canvas#1
+            ctx1.beginPath();
+            ctx1.arc(x1, 100, R, 0, Math.PI * 2, true);
+            ctx1.fill();
+
+            //draw on Canvas#2
+            if (rightKey)
+                x2++; //UPDATE BALL
+            ctx2.beginPath();
+            ctx2.arc(x2, 100, R, 0, Math.PI * 2, true);
+            ctx2.fill();
+
+            //new frame
+            requestAnimationFrame(render);
+        }
+        render();
+    </script>
+</body>
+
+</html>
