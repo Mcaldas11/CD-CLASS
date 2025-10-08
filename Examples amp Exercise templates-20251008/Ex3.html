@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt">
-
 <head>
     <meta charset="UTF-8">
     <title>INTERACTIONS</title>
 </head>
-
 <body>
     <canvas id="canvas" width="300" height="250" style="border:solid 1px green">
         Your browser does not support HTML5 Canvas.
@@ -18,13 +16,42 @@
         const W = canvas.width;
         const H = canvas.height;
 
-        //circle properties
-        ctx.fillStyle = "blue";
         const R = 20;
+        let x = W / 2;
+        let y = H / 2;
 
-        // TODO
+        const keys = {};
 
+        function drawCircle() {
+            ctx.clearRect(0, 0, W, H);
+            ctx.beginPath();
+            ctx.arc(x, y, R, 0, Math.PI * 2);
+            ctx.fillStyle = "blue";
+            ctx.fill();
+        }
+
+        function updatePosition() {
+            const speed = 2;
+
+            if (keys["ArrowUp"] && y - R > 0) y -= speed;
+            if (keys["ArrowDown"] && y + R < H) y += speed;
+            if (keys["ArrowLeft"] && x - R > 0) x -= speed;
+            if (keys["ArrowRight"] && x + R < W) x += speed;
+
+            drawCircle();
+        }
+
+        document.addEventListener("keydown", e => {
+            keys[e.key] = true;
+        });
+
+        document.addEventListener("keyup", e => {
+            keys[e.key] = false;
+        });
+
+        setInterval(updatePosition, 10); // Smooth movement
+
+        drawCircle(); // Initial draw
     </script>
 </body>
-
 </html>
