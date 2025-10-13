@@ -48,14 +48,38 @@
 			breathInc: 0.5,
 			breathMax: 4
 		};
+		
 
 		function render() {
-			ctx.clearRect(0, 0, W, H); // clears the canvas 
+        ctx.clearRect(0, 0, W, H); // clears the canvas
 
-			ctx.drawImage(character.images["legs"], character.x, character.y);
+        ctx.drawImage(character.images["legs"], character.x, character.y);
 
-			//TODO
-		}
+        //TODO
+
+        character.breathAmt += character.breathInc;
+        if (
+          character.breathAmt > character.breathMax ||
+          character.breathAmt < -character.breathMax
+        )
+          character.breathInc = -character.breathInc;
+
+        const breath = Math.round(character.breathAmt);
+
+        ctx.drawImage(
+          character.images["leftArm"],character.x + 40,character.y - 42 + breath);
+        ctx.drawImage(character.images["torso"], character.x, character.y - 50);
+        ctx.drawImage(character.images["rightArm"],character.x - 15,character.y - 42 + breath);
+
+        ctx.drawImage(character.images["head"],character.x - 10,character.y - 125 + breath);
+        ctx.drawImage(character.images["hair"],character.x - 37,character.y - 138 + breath);
+      }
+
+      canvas.addEventListener("click", (event) => {
+        if (!character.jumping) {
+          character.jumping = true;
+        }
+      });
 	</script>
 </body>
 
