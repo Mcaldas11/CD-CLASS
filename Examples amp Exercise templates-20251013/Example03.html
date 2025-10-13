@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IMAGES</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="500" height="300" style="border:solid 2px black">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+    <video id="myVideo" controls height="300" width="500">
+        <source src="images/PromoTSIW.mp4"> Your browser doesn't support HTML5 video. Try a different browser instead.
+    </video>
+
+
+    <script>
+        const canvas = document.querySelector('#myCanvas');
+        const ctx = canvas.getContext("2d");
+
+        const W = canvas.width; const H = canvas.height;
+
+        const video = document.querySelector("#myVideo");
+
+        video.addEventListener('pause',function () {
+            ctx.drawImage(video, 10, 10, W - 20, H - 20);
+        });
+
+
+    </script>
+</body>
+
+</html>

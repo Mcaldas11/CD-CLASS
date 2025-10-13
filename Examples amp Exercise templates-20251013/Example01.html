@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IMAGES</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="500" height="500" style="border:solid 2px black">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script>
+        const canvas = document.querySelector('#myCanvas');
+        const ctx = canvas.getContext("2d");
+
+        const W = canvas.width; const H = canvas.height;
+
+        //create a generic JavaScript image object
+        let img = new Image();
+        //define the source (local image file)
+        img.src = 'images/ESMAD_rave_1819.jpg';
+
+        //wait for the image load event
+        img.onload = function () {
+            //draw the full image
+            ctx.drawImage(img, 0, 0, W, H);
+        };
+
+
+
+    </script>
+</body>
+
+</html>

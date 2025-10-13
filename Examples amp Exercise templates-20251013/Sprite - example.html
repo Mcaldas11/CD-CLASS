@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sprite</title>
+</head>
+
+<body>
+	<canvas id="myCanvas" width="300" height="300" style="border:solid 3px blue">
+		Your browser does not support HTML5 Canvas.
+	</canvas>
+	<script>
+		const canvas = document.querySelector('#myCanvas');
+		const ctx = canvas.getContext("2d");
+
+		const W = canvas.width, H = canvas.height;
+
+		let image = new Image();
+		image.src = 'images/coin-sprite-animation.png';
+
+		image.onload = function () {
+			setInterval(render, 1000 / 15); //start animation AFTER image load! - 15 fps
+		};
+
+		//sprite frame counter 		
+		let frameIndex = 0;
+
+		function render() {
+			ctx.clearRect(0, 0, W, H);
+
+			ctx.drawImage(image, frameIndex * 100, 0, 100, 100,
+				0, 0, 100, 100);
+
+			frameIndex++;
+			if (frameIndex == 10)
+				frameIndex = 0; //reset the number of frames counter
+		}
+
+
+	</script>
+</body>
+
+</html>

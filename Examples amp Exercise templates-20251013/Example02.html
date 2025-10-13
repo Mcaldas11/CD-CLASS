@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>IMAGES</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="500" height="500" style="border:solid 2px black">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+    <canvas id="myCanvas2" width="500" height="500" style="border:solid 2px black">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+    <script>
+        const canvas = document.querySelector('#myCanvas');
+        const ctx = canvas.getContext("2d");
+
+        const canvas2 = document.querySelector('#myCanvas2');
+        const ctx2 = canvas2.getContext("2d");
+
+        const W = canvas.width; const H = canvas.height;
+
+        let gradient = ctx.createLinearGradient(0, 0, 500, 500);
+        gradient.addColorStop(0, 'red');
+        gradient.addColorStop(0.5, 'green');
+        gradient.addColorStop(1, 'blue');
+        ctx.fillStyle = gradient;
+
+
+        //Draw something on the 1st Canvas
+        ctx.fillRect(10, 10, W - 20, H - 20);
+
+        //Copy from Canvas#1 to Canvas#2, on click event
+        canvas2.addEventListener('click', function () {
+            ctx2.drawImage(canvas, 0, 0);
+        });
+
+
+    </script>
+</body>
+
+</html>

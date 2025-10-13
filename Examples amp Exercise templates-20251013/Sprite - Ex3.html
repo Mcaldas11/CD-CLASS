@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sprite</title>
+</head>
+
+<body>
+	<canvas id="myCanvas" width="300" height="300" style="border:solid 3px blue">
+		Your browser does not support HTML5 Canvas.
+	</canvas>
+	<script>
+		const canvas = document.querySelector('#myCanvas');
+		const ctx = canvas.getContext("2d");
+
+		const W = canvas.width, H = canvas.height;
+
+		const spriteList = [
+			"leftArm", "legs", "torso", "rightArm",
+			"head", "hair", "leftArm-jump", "legs-jump", "rightArm-jump"
+		];
+
+		loadImages(spriteList);
+
+		function loadImages(names) {
+			let loaded = 0;
+			names.forEach(name => {
+				const img = new Image();
+				img.src = `images/${name}.png`;
+				img.onload = () => {
+					character.images[name] = img;
+					if (++loaded === names.length)
+						setInterval(render, 1000 / 15)
+					console.log(loaded);
+				};
+			});
+		}
+
+		//Character parameters
+		const character = {
+			images: {},
+			x: 120,
+			y: 250,
+			jumping: false,
+			jumpHeight: 10,
+			breathAmt: 0,
+			breathInc: 0.5,
+			breathMax: 4
+		};
+
+		function render() {
+			ctx.clearRect(0, 0, W, H); // clears the canvas 
+
+			ctx.drawImage(character.images["legs"], character.x, character.y);
+
+			//TODO
+		}
+	</script>
+</body>
+
+</html>
