@@ -43,7 +43,9 @@
 			x: 120,
 			y: 250,
 			jumping: false,
-			jumpHeight: 10,
+			jumpHeight: 40, // peak jump (pixels)
+			jumpTimer: 0, // ms since jump start
+			jumpDuration: 600, // total jump duration in ms
 			breathAmt: 0,
 			breathInc: 0.5,
 			breathMax: 4
@@ -51,35 +53,51 @@
 		
 
 		function render() {
-        ctx.clearRect(0, 0, W, H); // clears the canvas
+			ctx.clearRect(0, 0, W, H); // clears the canvas
 
-        ctx.drawImage(character.images["legs"], character.x, character.y);
+			// breathing
+			character.breathAmt += character.breathInc;
+			if (
+				character.breathAmt > character.breathMax ||
+				character.breathAmt < -character.breathMax
+			)
+				character.breathInc = -character.breathInc;
 
-        //TODO
+			const breath = Math.round(character.breathAmt);
 
-        character.breathAmt += character.breathInc;
-        if (
-          character.breathAmt > character.breathMax ||
-          character.breathAmt < -character.breathMax
-        )
-          character.breathInc = -character.breathInc;
+			let jumpOffset = 0;
+			if (character.jumping) {
+				character.jumpTimer += 1000 / 15; 
+				const t = character.jumpTimer / character.jumpDuration; 
+				if (t >= 1) {
+					character.jumping = false;
+					character.jumpTimer = 0;
+				} else {
+					const parab = 4 * t * (1 - t); // peak at t=0.5
+					jumpOffset = -parab * character.jumpHeight; // negative => up
+				}
+			}
 
-        const breath = Math.round(character.breathAmt);
+			// choose jump sprites during jump when available
+			const legsImg = character.jumping && character.images["legs-jump"] ? character.images["legs-jump"] : character.images["legs"];
+			const leftArmImg = character.jumping && character.images["leftArm-jump"] ? character.images["leftArm-jump"] : character.images["leftArm"];
+			const rightArmImg = character.jumping && character.images["rightArm-jump"] ? character.images["rightArm-jump"] : character.images["rightArm"];
 
-        ctx.drawImage(
-          character.images["leftArm"],character.x + 40,character.y - 42 + breath);
-        ctx.drawImage(character.images["torso"], character.x, character.y - 50);
-        ctx.drawImage(character.images["rightArm"],character.x - 15,character.y - 42 + breath);
+			// draw (apply both breath and jump offsets where appropriate)
+			ctx.drawImage(legsImg, character.x, character.y + jumpOffset);
+			ctx.drawImage(leftArmImg, character.x + 40, character.y - 42 + breath + jumpOffset);
+			ctx.drawImage(character.images["torso"], character.x, character.y - 50 + jumpOffset);
+			ctx.drawImage(rightArmImg, character.x - 15, character.y - 42 + breath + jumpOffset);
+			ctx.drawImage(character.images["head"], character.x - 10, character.y - 125 + breath + jumpOffset);
+			ctx.drawImage(character.images["hair"], character.x - 37, character.y - 138 + breath + jumpOffset);
+		}
 
-        ctx.drawImage(character.images["head"],character.x - 10,character.y - 125 + breath);
-        ctx.drawImage(character.images["hair"],character.x - 37,character.y - 138 + breath);
-      }
-
-      canvas.addEventListener("click", (event) => {
-        if (!character.jumping) {
-          character.jumping = true;
-        }
-      });
+			canvas.addEventListener("click", (event) => {
+				if (!character.jumping) {
+					character.jumping = true;
+					character.jumpTimer = 0; // start jump
+				}
+			});
 	</script>
 </body>
 
