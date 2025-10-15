@@ -2,71 +2,165 @@
 <html>
 <head>
   <meta charset="utf-8"/>
-  <title>Ex1 - Projectile with Bouncing</title>
-  <style> body{font-family:Arial;margin:10px;display:flex;gap:12px;align-items:flex-start}
-    canvas{border:1px solid #333;background:#fff}</style>
+  <title>Projétil com Desaparecimento Gradual</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #f0f0f0;
+    }
+    canvas {
+      border: 1px solid #333;
+      background: #fff;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .info {
+      background: white;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      max-width: 300px;
+    }
+  </style>
 </head>
 <body>
-<canvas id="c" width="640" height="360"></canvas>
-<script>
-const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
-const W = canvas.width, H = canvas.height;
+  <canvas id="c" width="640" height="360"></canvas>
+  
+  <script>
+    const canvas = document.getElementById('c');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width;
+    const H = canvas.height;
 
-// Config (conforme enunciado)
-const V0 = 8; // px/frame
-const angleDeg = -85;
-const angle = angleDeg * Math.PI/180;
-const gravity = 0.1; // px/frame^2
+    // Configuração conforme enunciado
+    const V0 = 8; // px/frame
+    const angleDeg = -85;
+    const angle = angleDeg * Math.PI/180;
+    const gravity = 0.1; // px/frame^2
 
-// Circle (projectile) starts bottom-left
-let ball = {
-  r: 16,
-  x: 20,
-  y: H - 16,
-  dX: V0 * Math.cos(angle),
-  dY: V0 * Math.sin(angle),
-  color: 'orange'
-};
+    // Bola (projétil) começa no canto inferior esquerdo
+    let ball = {
+      r: 16,
+      x: 20,
+      y: H - 16,
+      dX: V0 * Math.cos(angle),
+      dY: V0 * Math.sin(angle),
+      color: 'orange',
+      fadeProgress: 1.0, // 1.0 = totalmente visível, 0.0 = totalmente invisível
+      fading: false // Controla se está no processo de desaparecimento
+    };
 
-// small air friction for realism
-const bounceDampen = 0.9; // reduce velocity after bounce
+    // Array para armazenar o rastro
+    const trail = [];
+    const maxTrailLength = 30;
 
-function update(){
-  // apply gravity (acceleration on Y)
-  ball.dY += gravity;
-  ball.x += ball.dX;
-  ball.y += ball.dY;
+    function update() {
+      // Se a bola já desapareceu completamente, não atualizar
+      if (ball.fadeProgress <= 0) return;
+      
+      // Aplicar gravidade (aceleração no eixo Y)
+      ball.dY += gravity;
+      ball.x += ball.dX;
+      ball.y += ball.dY;
 
-  // left/right walls: reflect X
-  if (ball.x - ball.r < 0) { ball.x = ball.r; ball.dX = -ball.dX * bounceDampen; }
-  if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.dX = -ball.dX * bounceDampen; }
+      // Adicionar posição atual ao rastro
+      trail.push({x: ball.x, y: ball.y});
+      
+      // Limitar o tamanho do rastro
+      if (trail.length > maxTrailLength) {
+        trail.shift();
+      }
 
-  // floor bounce - do NOT stop, invert dY
-  if (ball.y + ball.r > H) {
-    ball.y = H - ball.r;
-    ball.dY = -ball.dY * bounceDampen;
-  }
+      // Verificar colisão com paredes laterais
+      const hitLeftWall = ball.x - ball.r < 0;
+      const hitRightWall = ball.x + ball.r > W;
+      
+      if ((hitLeftWall || hitRightWall) && !ball.fading) {
+        // Iniciar processo de desaparecimento
+        ball.fading = true;
+      }
 
-  // ceiling
-  if (ball.y - ball.r < 0) { ball.y = ball.r; ball.dY = -ball.dY * bounceDampen; }
-}
+      // Se está desaparecendo, reduzir progressivamente a opacidade
+      if (ball.fading) {
+        // Calcular quanto da bola está dentro da parede
+        let penetration = 0;
+        if (hitLeftWall) {
+          penetration = Math.abs(ball.x - ball.r) / (ball.r * 2);
+        } else if (hitRightWall) {
+          penetration = Math.abs(ball.x + ball.r - W) / (ball.r * 2);
+        }
+        
+        // Reduzir opacidade baseado na penetração
+        ball.fadeProgress = Math.max(0, 1 - penetration);
+        
+        // Continuar movimento mesmo durante o desaparecimento
+        if (ball.fadeProgress <= 0) {
+          return; // Desaparecimento completo
+        }
+      }
 
-function draw(){
-  ctx.clearRect(0,0,W,H);
-  // ground line
-  ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(W,H); ctx.strokeStyle='#999'; ctx.stroke();
+      // Quique no chão - inverter dY SEM amortecimento
+      if (ball.y + ball.r > H) {
+        ball.y = H - ball.r;
+        ball.dY = -ball.dY;
+      }
 
-  ctx.beginPath();
-  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
-  ctx.fillStyle = ball.color; ctx.fill();
-}
+      // Colisão com o teto - inverter dY SEM amortecimento
+      if (ball.y - ball.r < 0) { 
+        ball.y = ball.r; 
+        ball.dY = -ball.dY;
+      }
+    }
 
-function loop(){
-  update();
-  draw();
-  requestAnimationFrame(loop);
-}
-loop();
-</script>
+    function draw() {
+      // Limpar canvas
+      ctx.clearRect(0, 0, W, H);
+      
+      // Desenhar linha do chão
+      ctx.beginPath(); 
+      ctx.moveTo(0, H); 
+      ctx.lineTo(W, H); 
+      ctx.strokeStyle = '#999'; 
+      ctx.stroke();
+
+      // Desenhar rastro apenas se a bola está visível
+      if (ball.fadeProgress > 0) {
+        for (let i = 0; i < trail.length; i++) {
+          const alpha = (i / trail.length) * ball.fadeProgress; // Opacidade considerando o fade
+          const radius = ball.r * (0.3 + 0.7 * (i / trail.length));
+          
+          ctx.beginPath();
+          ctx.arc(trail[i].x, trail[i].y, radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 165, 0, ${alpha * 0.5})`;
+          ctx.fill();
+        }
+
+        // Desenhar bola com opacidade baseada no fadeProgress
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 165, 0, ${ball.fadeProgress})`; 
+        ctx.fill();
+        
+        // Adicionar borda à bola (também com fade)
+        ctx.beginPath();
+        ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(51, 51, 51, ${ball.fadeProgress})`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+    
+    // Iniciar a animação
+    loop();
+  </script>
 </body>
 </html>
