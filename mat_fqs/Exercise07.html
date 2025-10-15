@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ex7 - Controlled Square</title>
+  <style> body{font-family:Arial;padding:12px} canvas{border:1px solid #444}</style>
+</head>
+<body>
+<canvas id="c" width="700" height="500"></canvas>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const W=c.width, H=c.height, cx=W/2, cy=H/2;
+
+let ship = {
+  x: cx, y: cy,
+  angle: 0, // radians
+  speed: 0,
+  size: 28
+};
+
+const maxSpeed = 6;
+const accel = 0.15;
+const rotSpeed = 0.06;
+const friction = 0.99;
+
+const keys = {};
+window.addEventListener('keydown', e => { keys[e.key] = true; });
+window.addEventListener('keyup', e => { keys[e.key] = false; });
+
+function update(){
+  // rotation
+  if (keys['ArrowLeft']) ship.angle -= rotSpeed;
+  if (keys['ArrowRight']) ship.angle += rotSpeed;
+  // forward/back
+  if (keys['ArrowUp']) {
+    ship.speed += accel;
+    if (ship.speed > maxSpeed) ship.speed = maxSpeed;
+  }
+  if (keys['ArrowDown']) {
+    ship.speed -= accel;
+    if (ship.speed < -maxSpeed/2) ship.speed = -maxSpeed/2;
+  }
+  // apply friction
+  ship.speed *= friction;
+
+  // move by current angle
+  ship.x += ship.speed * Math.cos(ship.angle);
+  ship.y += ship.speed * Math.sin(ship.angle);
+
+  // wrap around edges (optional)
+  if (ship.x < -ship.size) ship.x = W + ship.size;
+  if (ship.x > W + ship.size) ship.x = -ship.size;
+  if (ship.y < -ship.size) ship.y = H + ship.size;
+  if (ship.y > H + ship.size) ship.y = -ship.size;
+}
+
+function drawShip(){
+  ctx.save();
+  ctx.translate(ship.x, ship.y);
+  ctx.rotate(ship.angle);
+  // draw red square centered
+  ctx.fillStyle = 'red';
+  ctx.fillRect(-ship.size/2, -ship.size/2, ship.size, ship.size);
+  // nose marker
+  ctx.fillStyle = 'yellow';
+  ctx.fillRect(ship.size/2 - 6, -6, 6, 12);
+  ctx.restore();
+}
+
+function loop(){
+  ctx.clearRect(0,0,W,H);
+  update();
+  drawShip();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

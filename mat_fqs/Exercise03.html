@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ex3 - Rotating Squares</title>
+  <style> body{font-family:Arial;padding:12px} canvas{border:1px solid #333}</style>
+</head>
+<body>
+<canvas id="c" width="600" height="400"></canvas>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const W=c.width,H=c.height, cx=W/2, cy=H/2;
+
+const sizes = [120,120,120]; // same size
+// initial static rotations (degrees)
+const baseAngles = [0, 30, 60].map(a => a * Math.PI/180);
+// angular speeds (rad/frame) proportional: slowest, medium, fastest
+const speedBase = 0.01;
+const speeds = [speedBase, speedBase*2, speedBase*3];
+
+let angles = baseAngles.slice();
+
+function drawSquareAt(angle, size){
+  ctx.save();
+  ctx.translate(cx, cy);
+  ctx.rotate(angle);
+  ctx.fillRect(-size/2, -size/2, size, size);
+  ctx.restore();
+}
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+  // 1st - slowest - blue
+  ctx.fillStyle = '#3b82f6';
+  drawSquareAt(angles[0], sizes[0]);
+  // 2nd - grey
+  ctx.fillStyle = '#6b7280';
+  drawSquareAt(angles[1], sizes[1]);
+  // 3rd - dark - fastest
+  ctx.fillStyle = '#111827';
+  drawSquareAt(angles[2], sizes[2]);
+
+  // update angles
+  for(let i=0;i<angles.length;i++) angles[i]+=speeds[i];
+
+  requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Ex2 - Earth and Moon</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    canvas {
+      border: 1px solid #1e3a8a;
+      background: white;
+    }
+
+    #controls {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 240px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="640" height="480">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <div id="controls">
+    <label><strong>Controls</strong></label>
+
+    <div>
+      <label>Earth orbit radius: <span id="rEarthLabel">150</span> px</label>
+      <input id="rEarth" type="range" min="20" max="200" value="150">
+    </div>
+
+    <div>
+      <label>Moon orbit radius: <span id="rMoonLabel">40</span> px</label>
+      <input id="rMoon" type="range" min="30" max="100" value="40">
+    </div>
+
+    <div>
+      <label>Earth angular speed: <span id="wEarthLabel">0.01</span> rad/frame</label>
+      <input id="wEarth" type="range" min="-0.06" max="0.06" step="0.001" value="0.01">
+    </div>
+
+    <div>
+      <label>Moon angular speed: <span id="wMoonLabel">0.06</span> rad/frame</label>
+      <input id="wMoon" type="range" min="-0.5" max="0.5" step="0.005" value="0.06">
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    const cx = W / 2, cy = H / 2; // canvas center
+
+    // Controls
+    const rEarthSlider = document.getElementById('rEarth');
+    const rMoonSlider = document.getElementById('rMoon');
+    const wEarthSlider = document.getElementById('wEarth');
+    const wMoonSlider = document.getElementById('wMoon');
+    const rEarthLabel = document.getElementById('rEarthLabel');
+    const rMoonLabel = document.getElementById('rMoonLabel');
+    const wEarthLabel = document.getElementById('wEarthLabel');
+    const wMoonLabel = document.getElementById('wMoonLabel');
+
+    // Initial parameters
+    let R_Earth = Number(rEarthSlider.value);   // Earth orbit radius
+    let R_moon = Number(rMoonSlider.value);    // Moon orbit radius
+    let omega_Earth = Number(wEarthSlider.value); // Earth angular speed
+    let omega_moon = Number(wMoonSlider.value);  // Moon angular speed
+
+    // Sizes
+    const EarthRadius = 18;
+    const moonRadius = 7;
+    const SunRadius = 25;
+
+    // Angles
+    let thetaEarth = 0;
+    let thetaMoon = 0;
+
+    // Event listeners
+    rEarthSlider.addEventListener('input', e => { R_Earth = Number(e.target.value); rEarthLabel.textContent = R_Earth.toFixed(0); });
+    rMoonSlider.addEventListener('input', e => { R_moon = Number(e.target.value); rMoonLabel.textContent = R_moon.toFixed(0); });
+    wEarthSlider.addEventListener('input', e => { omega_Earth = Number(e.target.value); wEarthLabel.textContent = omega_Earth.toFixed(3); });
+    wMoonSlider.addEventListener('input', e => { omega_moon = Number(e.target.value); wMoonLabel.textContent = omega_moon.toFixed(3); });
+
+    // Helper: draw orbit
+    function drawOrbit(cx0, cy0, radius) {
+      ctx.beginPath();
+      ctx.setLineDash([4, 6]);
+      ctx.arc(cx0, cy0, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Sun
+      ctx.beginPath();
+      ctx.arc(cx, cy, SunRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "orange";
+      ctx.fill();
+
+      // Earth orbit
+      drawOrbit(cx, cy, R_Earth);
+
+      // Earth position
+      let xEarth = cx + R_Earth * Math.cos(thetaEarth);
+      let yEarth = cy + R_Earth * Math.sin(thetaEarth);
+
+      ctx.beginPath();
+      ctx.arc(xEarth, yEarth, EarthRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "blue";
+      ctx.fill();
+
+      // Moon orbit
+      drawOrbit(xEarth, yEarth, R_moon);
+
+      // Moon position
+      let xMoon = xEarth + R_moon * Math.cos(thetaMoon);
+      let yMoon = yEarth + R_moon * Math.sin(thetaMoon);
+
+      ctx.beginPath();
+      ctx.arc(xMoon, yMoon, moonRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "gray";
+      ctx.fill();
+
+      // Update angles
+      thetaEarth += omega_Earth;
+      thetaMoon += omega_moon;
+
+      requestAnimationFrame(render);
+    }
+
+    render();
+  </script>
+</body>
+
+</html>

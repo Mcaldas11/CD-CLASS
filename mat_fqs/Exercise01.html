@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ex1 - Projectile with Bouncing</title>
+  <style> body{font-family:Arial;margin:10px;display:flex;gap:12px;align-items:flex-start}
+    canvas{border:1px solid #333;background:#fff}</style>
+</head>
+<body>
+<canvas id="c" width="640" height="360"></canvas>
+<script>
+const canvas = document.getElementById('c'), ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+// Config (conforme enunciado)
+const V0 = 8; // px/frame
+const angleDeg = -85;
+const angle = angleDeg * Math.PI/180;
+const gravity = 0.1; // px/frame^2
+
+// Circle (projectile) starts bottom-left
+let ball = {
+  r: 16,
+  x: 20,
+  y: H - 16,
+  dX: V0 * Math.cos(angle),
+  dY: V0 * Math.sin(angle),
+  color: 'orange'
+};
+
+// small air friction for realism
+const bounceDampen = 0.9; // reduce velocity after bounce
+
+function update(){
+  // apply gravity (acceleration on Y)
+  ball.dY += gravity;
+  ball.x += ball.dX;
+  ball.y += ball.dY;
+
+  // left/right walls: reflect X
+  if (ball.x - ball.r < 0) { ball.x = ball.r; ball.dX = -ball.dX * bounceDampen; }
+  if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.dX = -ball.dX * bounceDampen; }
+
+  // floor bounce - do NOT stop, invert dY
+  if (ball.y + ball.r > H) {
+    ball.y = H - ball.r;
+    ball.dY = -ball.dY * bounceDampen;
+  }
+
+  // ceiling
+  if (ball.y - ball.r < 0) { ball.y = ball.r; ball.dY = -ball.dY * bounceDampen; }
+}
+
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  // ground line
+  ctx.beginPath(); ctx.moveTo(0,H); ctx.lineTo(W,H); ctx.strokeStyle='#999'; ctx.stroke();
+
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI*2);
+  ctx.fillStyle = ball.color; ctx.fill();
+}
+
+function loop(){
+  update();
+  draw();
+  requestAnimationFrame(loop);
+}
+loop();
+</script>
+</body>
+</html>

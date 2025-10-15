@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ex4 - Scaled Hello</title>
+  <style> body{font-family:Arial;padding:12px} canvas{border:1px solid #444}</style>
+</head>
+<body>
+<canvas id="c" width="700" height="200"></canvas>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const W=c.width, H=c.height;
+
+// Texto centrado horizontalmente
+const text = "Hello!!!";
+ctx.font = "bold 48px Arial";
+ctx.textBaseline = "middle";
+
+// determine width to center
+const textWidth = ctx.measureText(text).width;
+const centerX = W/2, centerY = H/2;
+
+// apply scaling transformations to obtain desired appearance
+ctx.clearRect(0,0,W,H);
+ctx.save();
+// move origin to center of text
+ctx.translate(centerX, centerY);
+// scale X and Y differently (ex: stretch horizontally and squash vertically)
+ctx.scale(1.6, 0.9);
+// draw text centered at origin
+ctx.fillStyle = "#111";
+ctx.fillText(text, -textWidth/2 / 1.6, 0); // adjust because we scaled
+ctx.restore();
+</script>
+</body>
+</html>

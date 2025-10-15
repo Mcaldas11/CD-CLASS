@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ex6 - Cannon follows mouse</title>
+  <style> body{font-family:Arial;padding:12px} canvas{border:1px solid #444}</style>
+</head>
+<body>
+<canvas id="c" width="700" height="500"></canvas>
+<script>
+const c = document.getElementById('c'), ctx = c.getContext('2d');
+const W=c.width,H=c.height,cx=W/2,cy=H/2;
+let angle = 0;
+
+// mouse move to update angle
+c.addEventListener('mousemove', e => {
+  const rect = c.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  angle = Math.atan2(my - cy, mx - cx);
+});
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+  // base circle
+  ctx.beginPath(); ctx.arc(cx,cy,40,0,Math.PI*2); ctx.fillStyle='#2dd4bf'; ctx.fill();
+
+  // cannon barrel as rectangle rotated
+  ctx.save();
+  ctx.translate(cx,cy);
+  ctx.rotate(angle);
+  // draw barrel: rectangle extending to the right from origin
+  ctx.fillStyle = 'red';
+  ctx.fillRect(0, -12, 110, 24); // x,y relative to rotated origin
+  ctx.restore();
+
+  // small inner circle
+  ctx.beginPath(); ctx.arc(cx,cy,20,0,Math.PI*2); ctx.fillStyle='#fde68a'; ctx.fill();
+
+  requestAnimationFrame(render);
+}
+render();
+</script>
+</body>
+</html>
