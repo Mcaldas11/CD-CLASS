@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CANNON</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: #f8fafc;
+        }
+
+        canvas {
+            border: 1px solid #1e3a8a;
+            background: white;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="800" height="350">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script>
+        const canvas = document.querySelector('#canvas');
+        const ctx = canvas.getContext("2d");
+
+        const W = canvas.width, H = canvas.height;
+
+        //CANNON gun settings
+        let angle = 0; //angle for gun orientation
+
+        let cannonBalls = [];
+
+        window.onload = render; // start the animation
+
+        // Add the event listener for mousemove
+        canvas.addEventListener('mousemove', e => {
+            //mouse cursor coordinates
+            let x = e.offsetX; let y = e.offsetY;
+
+            // update cannon ORIENTATION angle​
+            let dx = x - 50;
+            let dy = y - (H - 50);
+            angle = Math.atan2(dy, dx);
+        });
+
+        // Add the event listener for mouse click
+        canvas.addEventListener('click', e => {
+            //mouse cursor coordinates
+            let x = e.offsetX; let y = e.offsetY;
+
+            // add a new cannon ball
+            cannonBalls.push(new cannonBall(angle))
+        });
+
+
+        function render() {
+            ctx.clearRect(0, 0, W, H);
+
+            //draw cannon
+            ctx.fillStyle = "#457b9d";
+            ctx.beginPath();
+            ctx.arc(50, H - 50, 50, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // use cannon orientation angle to determine final point of the line
+            ctx.strokeStyle = "#1d3557";
+            ctx.lineWidth = 20;
+            ctx.beginPath();
+            ctx.moveTo(50, H - 50);
+            ctx.lineTo(50 + 75 * Math.cos(angle), H - 50 + 75 * Math.sin(angle));
+            ctx.stroke();
+
+            ctx.fillStyle = "#a8dadc";
+            ctx.beginPath();
+            ctx.arc(50, H - 50, 25, 0, 2 * Math.PI);
+            ctx.fill();
+
+            // if (shoot) {
+            cannonBalls.forEach(ball => {
+                ball.draw();
+                ball.update();
+            })
+
+            requestAnimationFrame(render);
+        }
+
+
+        class cannonBall {
+            constructor(angle) {
+                this.R = 10 			//radius
+                this.COLOR = "#e63946" 	//color
+                this.x = 50 + 75 * Math.cos(angle)			// initial X position 
+                this.y = H - 50 + 75 * Math.sin(angle) 	// initial Y position 
+                this.A = 0.1 		// acceleration (gravity = 0.1 pixels per frame)
+                this.dX = 6 * Math.cos(angle) //initial velocity in X
+                this.dY = 6 * Math.sin(angle)	//initial velocity in Y
+            }
+            draw() {
+                ctx.fillStyle = this.COLOR;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.R, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+
+            update() {
+                // if circle hits the bottom of the Canvas
+                if (this.y > H - this.R) {
+                    this.y = H - this.R; // after bounce, start at the same point as before
+                    this.dY = -this.dY * 0.75; // invert signal of vertical velocity AND add some friction
+                    this.dX = this.dX * 0.75;
+                }
+                else {
+                    this.x += this.dX; // update circle X position (uniform motion)
+                    this.dY += this.A; // increase circle velocity in Y (accelerated motion)
+                    this.y += this.dY; // update circle Y position 
+                }
+            }
+        };
+    </script>
+</body>
+
+</html>

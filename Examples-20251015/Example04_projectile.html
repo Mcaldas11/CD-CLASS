@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Projectile</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    canvas {
+      border: 1px solid #1e3a8a;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="500" height="500" style="border:solid 1px blue">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+  <script>
+    let canvas = document.querySelector('#myCanvas');
+    let ctx = canvas.getContext("2d");
+
+    const W = canvas.width, H = canvas.height;
+
+    //CIRCLE: initialize a circle with properties and methods
+    let circle = {
+      R: 20, 			//radius
+      COLOR: "orange", 	//color
+      x: 20,			// initial X position (Canvas bottom left)
+      y: H - 20, 	// initial Y position (Canvas bottom left)
+      A: 0.1, 		// acceleration (gravity = 0.1 pixels per frame)
+      dX: 6 * Math.cos(-Math.PI / 3), //initial velocity in X
+      dY: 6 * Math.sin(-Math.PI / 3), 	//initial velocity in Y
+
+      draw() {
+        ctx.fillStyle = this.COLOR;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.R, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.stroke();
+      },
+
+      update() {
+        // if circle hits the bottom of the Canvas
+        if (this.y > H - this.R) {
+          this.y = H - this.R; // stop circle at the bottom
+          this.dX = this.dY = 0; // stop circle (comment this line and analyse)
+        }
+        else {
+          this.x += this.dX; // update circle X position (uniform motion)
+          this.dY += this.A; // increase circle velocity in Y (accelerated motion)
+          this.y += this.dY; // update circle Y position 
+        }
+      }
+    };
+
+    window.onload = render; // start the animation		
+
+    // ANIMATION FUNCTION
+    function render() {
+      // clear Canvas
+      ctx.fillStyle = "rgba(255,255,255,0.1)"
+      ctx.fillRect(0, 0, W, H);
+
+      // draw a circle
+      circle.draw();
+
+      // move the circle
+      circle.update();
+
+      console.log(circle.x, circle.y)
+
+      requestAnimationFrame(render);
+    }
+  </script>
+</body>
+
+</html>

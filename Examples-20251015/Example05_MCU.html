@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Circular motion</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    canvas {
+      border: 1px solid #1e3a8a;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="500" height="500">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+  <script>
+
+    let timer;
+    window.onload = function () {
+      timer = window.setInterval(render, 2000 / 360); // start the animation (360º in 2s -> 2000/360)
+    };
+
+    const canvas = document.querySelector('#myCanvas');
+    const ctx = canvas.getContext("2d");
+
+    const W = canvas.width, H = canvas.height;
+
+    //OBJECT: square definitions
+    let square = {
+      COLOR: "blue", 	//color
+      D: 50,	// dimensions
+      R: 100, // movement radius
+      ang: 0, // movement initial angle (in degrees)
+
+      draw() {
+        ctx.fillStyle = this.COLOR;
+        ctx.beginPath();
+        let posX = W / 2 - this.D / 2 + this.R * Math.cos(Math.PI / 180 * this.ang)
+        let posY = H / 2 - this.D / 2 + this.R * Math.sin(Math.PI / 180 * this.ang)
+        ctx.fillRect(posX, posY, this.D, this.D);
+      },
+
+      update() {
+        this.ang++; // increase 1 degree per frame
+      }
+    };
+
+
+
+    function render() {
+      //ERASE
+      ctx.clearRect(0, 0, W, H);
+
+      //DRAW
+      square.draw();
+
+      //auxiliary circle
+      ctx.beginPath();
+      ctx.arc(W / 2, H / 2, square.R, 0, 2 * Math.PI);
+      ctx.stroke();
+
+      //UPDATE
+      square.update();
+
+      //stop animation
+      if (square.ang > 360)
+        window.clearInterval(timer);
+    }
+  </script>
+</body>
+
+</html>

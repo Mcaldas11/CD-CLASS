@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Movimento retilíneo com ressalto</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    canvas {
+      border: 1px solid #1e3a8a;
+      background: white;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    label {
+      font-size: 14px;
+    }
+
+    input[type="range"] {
+      width: 120px;
+    }
+  </style>
+</head>
+
+<body>
+  <h2>Movimento retilíneo com ressalto nas bordas</h2>
+  <canvas id="myCanvas" width="600" height="400"></canvas>
+
+  <div class="controls">
+    <button id="leftBtn">⬅️ Girar Esquerda</button>
+    <button id="rightBtn">Girar Direita ➡️</button>
+    <label>Velocidade: <span id="speedValue">1</span></label>
+    <input type="range" id="speedSlider" min="0" max="5" step="0.1" value="1">
+    <button id="resetBtn">Reiniciar</button>
+  </div>
+
+  <div style="font-size:10px;">
+    <strong>Nota:</strong> Ao colisar com as bordas o círculo reflete (componente invertida) e o ângulo é actualizado
+    automaticamente.
+  </div>
+
+  <script>
+    const canvas = document.getElementById('myCanvas');
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+
+    const circle = {
+      R: 20,
+      COLOR: "orange",
+      x: W / 2,
+      y: H / 2,
+      speed: 1,               // pixels per frame
+      angle: Math.PI / 4,     // initial angle (45 degrees)
+
+      draw() {
+        ctx.fillStyle = this.COLOR;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.R, 0, Math.PI * 2);
+        ctx.fill();
+      },
+
+      update() {
+        // displacement in X and Y based on angle and speed
+        this.dX = this.speed * Math.cos(this.angle);
+        this.dY = this.speed * Math.sin(this.angle);
+        this.x += this.dX;  // update horizontal position
+        this.y += this.dY;  // update vertical position
+
+        // check Canvas vertical collisions
+        if (this.x < this.R || this.x > W - this.R) {
+          this.dX = -this.dX;
+          this.angle = Math.atan2(this.dY, this.dX);
+        }
+        // check Canvas horizontal collisions
+        if (this.y < this.R || this.y > H - this.R) {
+          this.dY = -this.dY;
+          this.angle = Math.atan2(this.dY, this.dX);
+        }
+
+      },
+
+      drawVector() {
+        // draw direction vector (arrow)
+        const arrowLen = Math.min(80, this.speed * 12 + 20); // arrow length scales with speed
+        const x2 = this.x + arrowLen * Math.cos(this.angle);
+        const y2 = this.y + arrowLen * Math.sin(this.angle);
+        ctx.strokeStyle = "#0ea5e9"; // light blue
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.x, this.y);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        // arrowhead
+        const head = 10;
+        const leftX = x2 - head * Math.cos(this.angle - Math.PI / 6);
+        const leftY = y2 - head * Math.sin(this.angle - Math.PI / 6);
+        const rightX = x2 - head * Math.cos(this.angle + Math.PI / 6);
+        const rightY = y2 - head * Math.sin(this.angle + Math.PI / 6);
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(leftX, leftY);
+        ctx.lineTo(rightX, rightY);
+        ctx.closePath();
+        ctx.fillStyle = "#0ea5e9";
+        ctx.fill();
+      },
+    };
+
+    onload = () => {
+      render();
+    };
+
+    function render() {
+      ctx.clearRect(0, 0, W, H);
+      circle.draw();
+      circle.drawVector();
+      circle.update();
+
+      // handle rotation from UI buttons
+      if (rotate === "left") circle.angle -= 0.03;
+      else if (rotate === "right") circle.angle += 0.03;
+
+
+      // info text
+      ctx.fillStyle = "black";
+      ctx.font = "14px Arial";
+      ctx.fillText(`Ângulo: ${(circle.angle * 180 / Math.PI).toFixed(1)}°`, 10, 20);
+      ctx.fillText(`Velocidade: ${circle.speed} px/frame`, 10, 40);
+
+      requestAnimationFrame(render);
+    }
+
+    // UI CONTROLS
+    // Direction control buttons
+    let rotate = null;
+    document.getElementById("leftBtn").onmousedown = () => rotate = "left";
+    document.getElementById("rightBtn").onmousedown = () => rotate = "right";
+    document.getElementById("leftBtn").onmouseup = () => rotate = null;
+    document.getElementById("rightBtn").onmouseup = () => rotate = null;
+    // Speed control slider
+    document.getElementById("speedSlider").addEventListener("input", () => {
+      circle.speed = parseFloat(speedSlider.value);
+      speedValue.textContent = circle.speed.toFixed(1);
+    });
+    // Reset button
+    document.getElementById("resetBtn").onclick = () => {
+      circle.x = W / 2;
+      circle.y = H / 2;
+      circle.angle = Math.random() * 2 * Math.PI;
+    };
+
+  </script>
+</body>
+
+</html>

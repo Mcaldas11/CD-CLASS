@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Transformations (and states)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px;
+      background: #f8fafc;
+    }
+
+    canvas {
+      border: 1px solid #1e3a8a;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="myCanvas" width="400" height="400" style="border:solid 1px blue">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+  <script>
+
+    const canvas = document.querySelector('#myCanvas');
+    const ctx = canvas.getContext("2d");
+
+    const W = canvas.width, H = canvas.height;
+    let angle = 0;
+    ctx.fillStyle = '#0095DD';
+
+    function render() {
+      ctx.clearRect(0, 0, W, H)
+
+      // draw a STATIC blue rectangle
+      ctx.fillRect(W / 2 - 50, H / 2 - 50, 100, 100);
+
+      // draw a ROTATING grey rectangle
+      ctx.save();
+      ctx.translate(W / 2, H / 2)
+      ctx.rotate(angle * Math.PI / 180)
+      ctx.fillStyle = '#4D4E53';
+      ctx.fillRect(-50, -50, 100, 100); //draw considering (0,0) as the its center
+      ctx.restore();
+
+
+      angle++;
+      window.requestAnimationFrame(render)
+    }
+    render();
+  </script>
+</body>
+
+</html>
