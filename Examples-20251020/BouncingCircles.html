@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BOUNCING CIRCLES</title>
+</head>
+
+<body>
+    <canvas id="myCanvas" width="400" height="400" style="border:solid 2px black">
+        Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <script type="module">
+        // import class Circle from another file
+        import Circle from './Circle.js';
+
+        // GLOBALS
+        const canvas = document.querySelector('#myCanvas');
+        const ctx = canvas.getContext("2d");
+
+        const W = canvas.width, H = canvas.height;
+        let circles = new Array(); // circles (array of objects)
+
+        window.onload = () => {
+            init();     //setup the array of objects
+            render();   //start the animation
+        };
+
+
+        function init() {
+            //setup as many circles as wanted
+            for (let i = 0; i < 50; i++) {
+
+                // random position (inside Canvas)
+                let xInit = 20 + Math.random() * (W - 2 * 20);
+                let yInit = 20 + Math.random() * (H - 2 * 20);
+
+                //random direction
+                let direction = Math.random() * 2 * Math.PI;
+
+                // x, y, d
+                circles.push(new Circle(xInit, yInit, direction))
+            }
+        }
+
+        function render() {
+            //fade Canvas
+            ctx.fillStyle = "rgba(255,255,255,0.25)"
+            ctx.fillRect(0, 0, W, H);
+
+            // draw & update
+            circles.forEach(c => {
+                c.draw(ctx);
+                c.update(W, H);
+            });
+
+            //new frame
+            window.requestAnimationFrame(render);
+        }
+    </script>
+</body>
+
+</html>
