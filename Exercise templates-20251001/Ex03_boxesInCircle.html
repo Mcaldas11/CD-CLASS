@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkerboard</title>
+  <style>
+    canvas {
+      border: 3px solid orange;
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="button" value="DRAW" onclick="draw()"> </input>
+  Number of boxes <input type="number" value=5 min="3" max="10" id="N">
+
+  <canvas id="myCanvas" width="500" height="500">
+    Your browser does not support HTML5 Canvas.
+  </canvas>
+
+  <script>
+    //globals
+    const canvas = document.querySelector('#myCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Canvas dimensions
+    let W = canvas.width;
+    let H = canvas.height;
+
+    const D = 20; //box dimension
+    const R = 100; //circle radius
+
+    //CIRCLE CENTER
+    const cX = W / 2;
+    const cY = H / 2;
+
+   
+    ctx.fillStyle = "black";
+
+    function draw() {
+      //update the number of squares to draw
+      let N = document.querySelector('#N').value; //N squares
+
+      //clears Canvas
+      ctx.clearRect(0, 0, W, H);
+
+      // circle (helper)
+      ctx.strokeStyle = "rgba(255,0,0,0.25)"
+      ctx.beginPath();
+      ctx.arc(W / 2, H / 2, 100, 0, 2 * Math.PI)
+      ctx.stroke();
+
+      //TODO
+      //....
+    }
+  </script>
+</body>
+
+</html>
