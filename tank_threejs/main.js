@@ -42,12 +42,8 @@ function init() {
     // --- CONSTRUÇÃO DO TANQUE ---
     createTank();
 
-    // --- ADICIONAR PAREDES (LABIRINTO) ---
-    // Paredes horizontais e verticais (x, y, z, largura, altura, profundidade)
-    createWall(0, 2, -30, 60, 4, 2);  // Parede de fundo
-    createWall(-30, 2, 0, 2, 4, 60);  // Parede lateral esquerda
-    createWall(30, 2, 0, 2, 4, 60);   // Parede lateral direita
-    createWall(10, 2, 10, 20, 4, 2);  // Obstáculo interno
+    
+    
 
     // Eventos
     window.addEventListener('keydown', (e) => keys[e.code] = true);
@@ -59,6 +55,7 @@ function init() {
     animate();
 }
 
+let tankBoxHelper;
 function createTank() {
     tank = new THREE.Group();
     
@@ -89,6 +86,10 @@ function createTank() {
     
     tank.position.set(0, 0, 20);
     scene.add(tank);
+
+    // Adiciona BoxHelper para visualizar bounding box do tanque inteiro
+    tankBoxHelper = new THREE.BoxHelper(tank, 0xff0000);
+    scene.add(tankBoxHelper);
 }
 
 // Função para criar Paredes e Cubos
@@ -131,30 +132,23 @@ function onMouseMove(event) {
     }
 }
 
-// Deteção de Colisões por Vértices (Slide 21 do PDF)
+// Deteção de Colisões por Vértices 
 function checkCollisions(nextPos) {
-    const colRaycaster = new THREE.Raycaster();
-    const posAttr = base.geometry.attributes.position;
-
-    // Atualiza a matriz do tanque temporariamente para prever a posição dos vértices
+    // Salva posição original
     const originalPosition = tank.position.clone();
     tank.position.copy(nextPos);
     tank.updateMatrixWorld();
 
-    for (let i = 0; i < posAttr.count; i++) {
-        const localVertex = new THREE.Vector3().fromBufferAttribute(posAttr, i);
-        const globalVertex = localVertex.applyMatrix4(base.matrixWorld);
-        const directionVector = globalVertex.clone().sub(tank.position);
+    const tankBox = new THREE.Box3().setFromObject(base);
 
-        colRaycaster.set(tank.position, directionVector.clone().normalize());
-        const intersects = colRaycaster.intersectObjects(obstacles);
-
-        if (intersects.length > 0 && intersects[0].distance < directionVector.length()) {
-            tank.position.copy(originalPosition); // Reverte posição
-            return true; 
+    for (let i = 0; i < obstacles.length; i++) {
+        const obsBox = new THREE.Box3().setFromObject(obstacles[i]);
+        if (tankBox.intersectsBox(obsBox)) {
+            tank.position.copy(originalPosition);
+            return true;
         }
     }
-    tank.position.copy(originalPosition); // Reverte posição
+    tank.position.copy(originalPosition);
     return false;
 }
 
@@ -188,6 +182,8 @@ function animate() {
     // Inclinação do Canhão/Mira (W e S)
     if (keys['KeyW'] && cannonPivot.rotation.x < 0.5) cannonPivot.rotation.x += 0.02;
     if (keys['KeyS'] && cannonPivot.rotation.x > -0.2) cannonPivot.rotation.x -= 0.02;
+
+    if (tankBoxHelper) tankBoxHelper.update();
 
     renderer.render(scene, camera);
 }
